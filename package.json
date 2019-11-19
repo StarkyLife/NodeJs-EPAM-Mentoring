@@ -1,0 +1,12 @@
+{
+  "name": "nodejs_homeworks",
+  "version": "0.0.1",
+  "description": "homeworks for NodeJs Mentoring Program",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "task1": "nodemon module_1/task1"
+  },
+  "author": "Ilshat Ismagilov",
+  "license": "ISC"
+}
