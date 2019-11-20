@@ -5,12 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "task1": "nodemon task1",
-    "task2": "nodemon task2"
+    "nodemon-babel": "nodemon --exec babel-node",
+    "task1": "npm run nodemon-babel task1",
+    "task2": "npm run nodemon-babel task2"
   },
   "author": "Ilshat Ismagilov",
   "license": "ISC",
   "dependencies": {
     "csvtojson": "^2.0.10"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/node": "^7.7.0",
+    "@babel/preset-env": "^7.7.1"
   }
 }

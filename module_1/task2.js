@@ -1,6 +1,6 @@
-const fs = require('fs');
-const { Transform, pipeline } = require('stream');
-const csv = require('csvtojson');
+import fs from 'fs';
+import { Transform, pipeline } from 'stream';
+import csv from 'csvtojson';
 
 const csvFilePath = './csv/example.csv';
 const txtFilePath = './example.txt';
