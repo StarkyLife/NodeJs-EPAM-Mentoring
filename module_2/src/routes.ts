@@ -17,6 +17,13 @@ router.post('/user', (request, response) => {
     response.send();
 });
 
+router.get<{ search: string, limit: string }>('/user-suggest', (request, response) => {
+    const { search, limit } = request.query;
+    const foundUsers = db.getAutoSuggestUsers(search, limit);
+
+    response.json(foundUsers);
+});
+
 router.delete<{ id: string }>('/user/:id', (request, response) => {
     const id = request.params.id;
     db.removeUserSoftly(id);

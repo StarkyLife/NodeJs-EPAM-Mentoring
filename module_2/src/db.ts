@@ -53,8 +53,26 @@ function removeUserSoftly(id: string): void {
     }
 }
 
+function getAutoSuggestUsers(loginSubstring: string, limit: number): User[] {
+    const foundUsers: User[] = [];
+
+    const regexp = new RegExp(loginSubstring, 'i');
+
+    for (const user of users) {
+        if (regexp.test(user.login)) {
+            foundUsers.push(user);
+        }
+        if (foundUsers.length >= limit) {
+            break;
+        }
+    }
+
+    return foundUsers;
+}
+
 export default {
     getUserById,
     createOrUpdateUser,
-    removeUserSoftly
+    removeUserSoftly,
+    getAutoSuggestUsers
 };
