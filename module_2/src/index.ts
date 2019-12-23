@@ -1,17 +1,8 @@
-export type User = {
-    id: string;
-    login: string;
-    passoword: string;
-    age: number;
-    isDeleted: boolean;
-};
+import express from 'express';
+import router from './routes';
 
-const user: User = {
-    id: '1',
-    login: '2',
-    passoword: 'password',
-    age: 12,
-    isDeleted: false
-};
+const app = express();
 
-console.log(user);
+app.listen(8080);
+app.use(express.json());
+app.use('/', router);
