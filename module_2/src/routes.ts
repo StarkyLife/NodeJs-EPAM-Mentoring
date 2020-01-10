@@ -12,7 +12,11 @@ router
         const id = request.params.id;
         const user = db.getUserById(id);
 
-        response.json(user);
+        if (user) {
+            response.json(user);
+        }
+
+        response.status(404).send('Not found!');
     })
     .post(
         '/user',
@@ -21,7 +25,7 @@ router
             const user = request.body;
             db.createOrUpdateUser(user);
 
-            response.send();
+            response.send('User created!');
         }
     )
     .get<{ search: string, limit: string }>('/user-suggest', (request, response) => {
@@ -34,7 +38,7 @@ router
         const id = request.params.id;
         db.removeUserSoftly(id);
 
-        response.send();
+        response.send('User removed!');
     });
 
 export default router;

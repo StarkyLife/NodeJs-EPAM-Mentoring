@@ -1,4 +1,5 @@
 import { User } from './user-entity';
+import { getObjectPropertyLexicalComparer } from './utils';
 
 const users: User[] = [
     {
@@ -67,7 +68,7 @@ function getAutoSuggestUsers(loginSubstring: string, limit: number): User[] {
         }
     }
 
-    return foundUsers;
+    return foundUsers.sort(getObjectPropertyLexicalComparer<User, 'login'>('login'));
 }
 
 export default {
