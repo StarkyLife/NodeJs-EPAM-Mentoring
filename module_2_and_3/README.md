@@ -20,5 +20,7 @@ GET user-autosuggestion: `curl http://localhost:8080/user-suggest\?search\=k\&li
 CREATE DATABASE mydb; (sql for creating new database)
 \c - reconnect to another db
 
+\i src/data-access/create-users-table.sql - execute sql-script
+
 \q - quit the database
 ```
