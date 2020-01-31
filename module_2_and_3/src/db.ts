@@ -1,4 +1,4 @@
-import { User } from './user-entity';
+import { User } from './models/user';
 import { getObjectPropertyLexicalComparer } from './utils';
 
 const users: User[] = [
