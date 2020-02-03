@@ -8,25 +8,21 @@ class UserService implements IUserService {
     constructor(private userRepository: IDatabaseRepository<User>) {}
 
     getById(id: string) {
-        const users = this.userRepository.get((u) => u.id === id, 1);
-
-        return users && users.length > 0
-            ? users[0]
-            : null;
+        return this.userRepository.getById(id);
     }
 
     createOrUpdate(user: User) {
-        return  this.userRepository.createOrUpdate(user);
+        return this.userRepository.createOrUpdate(user);
     }
 
-    removeSoftly(id: string) {
-        const found = this.getById(id);
+    async removeSoftly(id: string) {
+        const found = await this.getById(id);
 
         if (!found) {
             throw new Error('Not Found!');
         }
 
-        const updatedUser = this.userRepository.createOrUpdate({
+        const updatedUser = await this.userRepository.createOrUpdate({
             ...found,
             isDeleted: true
         });
@@ -38,10 +34,8 @@ class UserService implements IUserService {
         return true;
     }
 
-    search(login: string, limit: number) {
-        const regexp = new RegExp(login, 'i');
-
-        const foundUsers = this.userRepository.get((user) => regexp.test(user.login), limit);
+    async search(login: string, limit: number) {
+        const foundUsers = await this.userRepository.getByRegexp(login, limit);
 
         return foundUsers.sort(getObjectPropertyLexicalComparer<User, 'login'>('login'));
     }

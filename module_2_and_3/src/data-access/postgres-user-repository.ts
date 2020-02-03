@@ -1,13 +1,45 @@
+import { Sequelize, Op } from 'sequelize';
+
 import { User } from '../models/user';
+import { UserModel, init as initUserModel } from './user-model';
 
 import { IDatabaseRepository } from './database-respository-interface';
 
+const sequelize = new Sequelize('postgres://localhost:5432/nodejs_mentoring');
+initUserModel(sequelize);
+
 class PostgresUserRepository implements IDatabaseRepository<User> {
-    get(condition: (entity: User) => boolean, limit?: number | undefined): User[] {
-        throw new Error('Method not implemented.');
+    checkConnection() {
+        sequelize.
+            authenticate()
+            .then(() => console.log('Success connection'))
+            .catch((error: Error) => console.log(`Error in connection ${error?.message}`));
     }
-    createOrUpdate(entity: User): User | null {
-        throw new Error('Method not implemented.');
+
+    async getById(id: string): Promise<User> {
+        const user = await UserModel.findByPk(id);
+
+        return user;
+    }
+
+    async getByRegexp(regexpString: string, limit?: number | undefined): Promise<User[]> {
+        const users = await UserModel.findAll({
+            where: {
+                login: {
+                    [Op.iRegexp]: regexpString
+                }
+            },
+            limit
+        });
+
+        return users;
+    }
+
+    async createOrUpdate(entity: User): Promise<User | null> {
+        // TODO: map User to UserModel
+        const updatedUser = await UserModel.create(entity);
+
+        return updatedUser;
     }
 }
 

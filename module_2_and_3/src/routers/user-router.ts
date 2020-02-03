@@ -8,7 +8,7 @@ import { IUserService } from '../services/user-service-interface';
 const UserValidationSchema = Joi.object<User>({
     id: Joi.string().required(),
     login: Joi.string().required(),
-    passoword: Joi.string().alphanum().required(),
+    password: Joi.string().alphanum().required(),
     age: Joi.number().greater(4).less(130).required(),
     isDeleted: Joi.bool().required()
 }).required();
@@ -18,46 +18,66 @@ export function createUserRouter(userService: IUserService): Router {
     const validator = createValidator();
 
     userRouter
-        .get<{ id: string }>('/user/:id', (request, response) => {
-            const id = request.params.id;
-            const user = userService.getById(id);
+        .get<{ id: string }>(
+            '/user/:id',
+            async (request, response) => {
+                const id = request.params.id;
 
-            if (user) {
-                response.json(user);
-            }
+                try {
+                    const user = await userService.getById(id);
 
-            response.status(404).send('Not found!');
-        })
-        .post(
-            '/user',
-            validator.body(UserValidationSchema),
-            (request, response) => {
-                const user = request.body;
-                const updatedUser = userService.createOrUpdate(user);
+                    if (!user) {
+                        response.status(404).send('Not found!');
+                    }
 
-                if (updatedUser) {
-                    response.send('User created!');
-                } else {
-                    response.status(500).end();
+                    response.json(user);
+                } catch (error) {
+                    response.status(500).send(error?.message);
                 }
             }
         )
-        .get<{ search: string, limit: string }>('/user-suggest', (request, response) => {
-            const { search: searchString, limit } = request.query;
-            const foundUsers = userService.search(searchString, limit);
+        .post(
+            '/user',
+            validator.body(UserValidationSchema),
+            async (request, response) => {
+                const user = request.body;
 
-            response.json(foundUsers);
-        })
-        .delete<{ id: string }>('/user/:id', (request, response) => {
-            const id = request.params.id;
+                try {
+                    await userService.createOrUpdate(user);
 
-            try {
-                userService.removeSoftly(id);
-                response.send('User removed!');
-            } catch (error) {
-                response.status(500).end();
+                    response.send('User created!');
+                } catch (error) {
+                    response.status(500).send(error?.message);
+                }
             }
-        });
+        )
+        .get<{ search: string, limit: string }>(
+            '/user-suggest',
+            async (request, response) => {
+                const { search: searchString, limit } = request.query;
+
+                try {
+                    const foundUsers = await userService.search(searchString, limit);
+
+                    response.json(foundUsers);
+                } catch (error) {
+                    response.status(500).send(error?.message);
+                }
+            }
+        )
+        .delete<{ id: string }>(
+            '/user/:id',
+            async (request, response) => {
+                const id = request.params.id;
+
+                try {
+                    await userService.removeSoftly(id);
+                    response.send('User removed!');
+                } catch (error) {
+                    response.status(500).send(error?.message);
+                }
+            }
+        );
 
     return userRouter;
 }

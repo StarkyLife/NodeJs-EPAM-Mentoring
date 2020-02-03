@@ -22,5 +22,7 @@ CREATE DATABASE mydb; (sql for creating new database)
 
 \i src/data-access/create-users-table.sql - execute sql-script
 
+\conninfo - get current connection info (`port` and etc.)
+
 \q - quit the database
 ```

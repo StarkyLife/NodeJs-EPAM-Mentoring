@@ -13,6 +13,7 @@ app.use(express.json());
 /* User Routes */
 
 const userRepository = new PostgresUserRepository();
+userRepository.checkConnection();
 const userService = new UserService(userRepository);
 
 app.use('/', createUserRouter(userService));

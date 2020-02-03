@@ -1,6 +1,8 @@
 type TCondition<T> = (entity: T) => boolean;
 
 export interface IDatabaseRepository<T extends object> {
-    get(condition: TCondition<T>, limit?: number): T[];
-    createOrUpdate(entity: T): T | null;
+    getById(id: string): Promise<T>;
+    getByRegexp(regexpString: string, limit?: number): Promise<T[]>;
+
+    createOrUpdate(entity: T): Promise<T | null>;
 }

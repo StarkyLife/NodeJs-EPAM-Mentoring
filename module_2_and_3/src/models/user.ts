@@ -1,7 +1,7 @@
 export interface User {
     id: string;
     login: string;
-    passoword: string;
+    password: string;
     age: number;
     isDeleted: boolean;
 }
