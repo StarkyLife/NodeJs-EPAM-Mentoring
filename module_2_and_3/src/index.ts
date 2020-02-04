@@ -12,8 +12,9 @@ app.use(express.json());
 
 /* User Routes */
 
-const userRepository = new PostgresUserRepository();
-userRepository.checkConnection();
+const DB_CONNECTION_STRING = process.env.DB || 'postgres://localhost:5432/nodejs_mentoring';
+const userRepository = new PostgresUserRepository(DB_CONNECTION_STRING);
+
 const userService = new UserService(userRepository);
 
 app.use('/', createUserRouter(userService));

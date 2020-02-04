@@ -5,20 +5,6 @@ import { UserModel, init as initUserModel } from '../models/user';
 
 import { IDatabaseRepository } from './database-respository-interface';
 
-const DB_CONNECTION_STRING = process.env.DB || 'postgres://localhost:5432/nodejs_mentoring';
-
-const sequelize = new Sequelize(DB_CONNECTION_STRING);
-
-initUserModel(sequelize);
-UserModel
-    .sync({ force: true })
-    .then(() => UserModel.bulkCreate([
-        { login: 'starky', password: 'pass', age: 25 },
-        { login: 'Vika', password: 'passStrong', age: 25 },
-        { login: 'Alexander', password: 'passWeak', age: 25 },
-        { login: 'Andrei', password: 'passSuperStrong', age: 30 }
-    ]));
-
 function convertToUser(model: UserModel): User | null {
     if (!model) {
         return null;
@@ -34,8 +20,22 @@ function convertToUser(model: UserModel): User | null {
 }
 
 class PostgresUserRepository implements IDatabaseRepository<User> {
-    checkConnection() {
-        sequelize.
+    private sequelize: Sequelize;
+
+    constructor(connectionString: string) {
+        this.sequelize = new Sequelize(connectionString);
+
+        initUserModel(this.sequelize);
+        UserModel
+            .sync({ force: true })
+            .then(() => UserModel.bulkCreate([
+                { login: 'starky', password: 'pass', age: 25 },
+                { login: 'Vika', password: 'passStrong', age: 25 },
+                { login: 'Alexander', password: 'passWeak', age: 25 },
+                { login: 'Andrei', password: 'passSuperStrong', age: 30 }
+            ]));
+
+        this.sequelize.
             authenticate()
             .then(() => console.log('Success connection'))
             .catch((error: Error) => console.log(`Error in connection ${error?.message}`));
