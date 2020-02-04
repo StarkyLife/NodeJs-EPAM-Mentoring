@@ -5,8 +5,33 @@ import { UserModel, init as initUserModel } from './user-model';
 
 import { IDatabaseRepository } from './database-respository-interface';
 
-const sequelize = new Sequelize('postgres://localhost:5432/nodejs_mentoring');
+const DB_CONNECTION_STRING = process.env.DB || 'postgres://localhost:5432/nodejs_mentoring';
+
+const sequelize = new Sequelize(DB_CONNECTION_STRING);
+
 initUserModel(sequelize);
+UserModel
+    .sync({ force: true })
+    .then(() => UserModel.bulkCreate([
+        { login: 'starky', password: 'pass', age: 25 },
+        { login: 'Vika', password: 'passStrong', age: 25 },
+        { login: 'Alexander', password: 'passWeak', age: 25 },
+        { login: 'Andrei', password: 'passSuperStrong', age: 30 }
+    ]));
+
+function convertToUser(model: UserModel): User | null {
+    if (!model) {
+        return null;
+    }
+
+    return {
+        id: model.user_id,
+        login: model.login,
+        password: model.password,
+        age: model.age,
+        isDeleted: model.is_deleted
+    };
+}
 
 class PostgresUserRepository implements IDatabaseRepository<User> {
     checkConnection() {
@@ -16,10 +41,10 @@ class PostgresUserRepository implements IDatabaseRepository<User> {
             .catch((error: Error) => console.log(`Error in connection ${error?.message}`));
     }
 
-    async getById(id: string): Promise<User> {
+    async getById(id: string): Promise<User | null> {
         const user = await UserModel.findByPk(id);
 
-        return user;
+        return convertToUser(user);
     }
 
     async getByRegexp(regexpString: string, limit?: number | undefined): Promise<User[]> {
@@ -32,14 +57,32 @@ class PostgresUserRepository implements IDatabaseRepository<User> {
             limit
         });
 
-        return users;
+        return users.map(convertToUser);
     }
 
     async createOrUpdate(entity: User): Promise<User | null> {
-        // TODO: map User to UserModel
-        const updatedUser = await UserModel.create(entity);
+        const found: UserModel = await UserModel.findByPk(entity.id);
 
-        return updatedUser;
+        if (found) {
+            const updatedUser =  await found.update({
+                login: entity.login,
+                password: entity.password,
+                age: entity.age,
+                is_deleted: entity.isDeleted
+            });
+
+            return convertToUser(updatedUser);
+        }
+
+        const newUser = await UserModel.create({
+            user_id: entity.id,
+            login: entity.login,
+            password: entity.password,
+            age: entity.age,
+            is_deleted: entity.isDeleted
+        });
+
+        return convertToUser(newUser);
     }
 }
 

@@ -5,14 +5,14 @@ export class UserModel extends Model {
     login!: string;
     password!: string;
     age!: number;
-    isDeleted!: boolean;
+    is_deleted!: boolean;
 }
 
 export function init(sequelize: Sequelize): void {
     UserModel.init(
         {
             user_id: {
-                type: DataTypes.UUID,
+                type: DataTypes.INTEGER.UNSIGNED,
                 autoIncrement: true,
                 primaryKey: true
             },

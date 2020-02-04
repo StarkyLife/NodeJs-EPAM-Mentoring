@@ -43,9 +43,9 @@ export function createUserRouter(userService: IUserService): Router {
                 const user = request.body;
 
                 try {
-                    await userService.createOrUpdate(user);
+                    const updatedOrNew = await userService.createOrUpdate(user);
 
-                    response.send('User created!');
+                    response.json(updatedOrNew);
                 } catch (error) {
                     response.status(500).send(error?.message);
                 }
