@@ -1,7 +1,7 @@
 import { Sequelize, Op } from 'sequelize';
 
-import { User } from '../models/user';
-import { UserModel, init as initUserModel } from './user-model';
+import { User } from '../types/user';
+import { UserModel, init as initUserModel } from '../models/user';
 
 import { IDatabaseRepository } from './database-respository-interface';
 

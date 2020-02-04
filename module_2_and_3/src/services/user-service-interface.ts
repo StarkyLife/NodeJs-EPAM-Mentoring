@@ -1,4 +1,4 @@
-import { User } from '../models/user';
+import { User } from '../types/user';
 
 export interface IUserService {
     getById(id: string): Promise<User | null>;

@@ -1,4 +1,4 @@
-import { User } from '../models/user';
+import { User } from '../types/user';
 import { IDatabaseRepository } from '../data-access/database-respository-interface';
 import { IUserService } from './user-service-interface';
 
