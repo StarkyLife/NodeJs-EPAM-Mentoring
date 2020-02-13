@@ -11,11 +11,6 @@ export class UserModel extends Model {
 export function init(sequelize: Sequelize): void {
     UserModel.init(
         {
-            // user_id: {
-            //     type: DataTypes.INTEGER.UNSIGNED,
-            //     autoIncrement: true,
-            //     primaryKey: true
-            // },
             login: {
                 type: new DataTypes.STRING(50),
                 allowNull: false

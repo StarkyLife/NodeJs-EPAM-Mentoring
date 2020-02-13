@@ -1,7 +1,7 @@
-import { Sequelize, Op } from 'sequelize';
+import { Op } from 'sequelize';
 
 import { User } from '../types/user';
-import { UserModel, init as initUserModel } from '../models/user';
+import { UserModel } from '../models/user';
 
 import { IDatabaseRepository } from './database-respository.interface';
 
@@ -19,28 +19,7 @@ function convertToUser(model: UserModel): User | null {
     };
 }
 
-class PostgresUserRepository implements IDatabaseRepository<User> {
-    private sequelize: Sequelize;
-
-    constructor(connectionString: string) {
-        this.sequelize = new Sequelize(connectionString);
-
-        initUserModel(this.sequelize);
-        // UserModel
-        //     .sync({ force: true })
-        //     .then(() => UserModel.bulkCreate([
-        //         { login: 'starky', password: 'pass', age: 25 },
-        //         { login: 'Vika', password: 'passStrong', age: 25 },
-        //         { login: 'Alexander', password: 'passWeak', age: 25 },
-        //         { login: 'Andrei', password: 'passSuperStrong', age: 30 }
-        //     ]));
-
-        this.sequelize.
-            authenticate()
-            .then(() => console.log('Success connection'))
-            .catch((error: Error) => console.log(`Error in connection ${error?.message}`));
-    }
-
+class UserRepository implements IDatabaseRepository<User> {
     async getById(id: string): Promise<User | null> {
         const user = await UserModel.findByPk(id);
 
@@ -56,6 +35,12 @@ class PostgresUserRepository implements IDatabaseRepository<User> {
             },
             limit
         });
+
+        return users.map(convertToUser);
+    }
+
+    async getAll(): Promise<User[]> {
+        const users = await UserModel.findAll();
 
         return users.map(convertToUser);
     }
@@ -85,4 +70,4 @@ class PostgresUserRepository implements IDatabaseRepository<User> {
     }
 }
 
-export default PostgresUserRepository;
+export default UserRepository;
