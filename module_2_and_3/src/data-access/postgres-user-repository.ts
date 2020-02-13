@@ -11,7 +11,7 @@ function convertToUser(model: UserModel): User | null {
     }
 
     return {
-        id: model.user_id,
+        id: model.id,
         login: model.login,
         password: model.password,
         age: model.age,
@@ -26,14 +26,14 @@ class PostgresUserRepository implements IDatabaseRepository<User> {
         this.sequelize = new Sequelize(connectionString);
 
         initUserModel(this.sequelize);
-        UserModel
-            .sync({ force: true })
-            .then(() => UserModel.bulkCreate([
-                { login: 'starky', password: 'pass', age: 25 },
-                { login: 'Vika', password: 'passStrong', age: 25 },
-                { login: 'Alexander', password: 'passWeak', age: 25 },
-                { login: 'Andrei', password: 'passSuperStrong', age: 30 }
-            ]));
+        // UserModel
+        //     .sync({ force: true })
+        //     .then(() => UserModel.bulkCreate([
+        //         { login: 'starky', password: 'pass', age: 25 },
+        //         { login: 'Vika', password: 'passStrong', age: 25 },
+        //         { login: 'Alexander', password: 'passWeak', age: 25 },
+        //         { login: 'Andrei', password: 'passSuperStrong', age: 30 }
+        //     ]));
 
         this.sequelize.
             authenticate()
@@ -75,7 +75,6 @@ class PostgresUserRepository implements IDatabaseRepository<User> {
         }
 
         const newUser = await UserModel.create({
-            user_id: entity.id,
             login: entity.login,
             password: entity.password,
             age: entity.age,
