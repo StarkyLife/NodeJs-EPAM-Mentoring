@@ -3,7 +3,7 @@ import { Sequelize, Op } from 'sequelize';
 import { User } from '../types/user';
 import { UserModel, init as initUserModel } from '../models/user';
 
-import { IDatabaseRepository } from './database-respository-interface';
+import { IDatabaseRepository } from './database-respository.interface';
 
 function convertToUser(model: UserModel): User | null {
     if (!model) {

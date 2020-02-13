@@ -3,7 +3,7 @@ import { createValidator } from 'express-joi-validation';
 import Joi from '@hapi/joi';
 
 import { User } from '../types/user';
-import { IUserService } from '../services/user-service-interface';
+import { IUserService } from '../services/user-service.interface';
 
 const UserValidationSchema = Joi.object<User>({
     id: Joi.string().required(),

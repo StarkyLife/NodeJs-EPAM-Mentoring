@@ -1,6 +1,6 @@
 import { User } from '../types/user';
-import { IDatabaseRepository } from '../data-access/database-respository-interface';
-import { IUserService } from './user-service-interface';
+import { IDatabaseRepository } from '../data-access/database-respository.interface';
+import { IUserService } from './user-service.interface';
 
 import { getObjectPropertyLexicalComparer } from '../utils';
 
