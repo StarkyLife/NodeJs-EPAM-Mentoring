@@ -1,7 +1,9 @@
-export type Permissions = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_FILES';
+export type TPermissions = 'READ' | 'WRITE' | 'DELETE' | 'SHARE' | 'UPLOAD_FILES';
 
-export interface Group {
+export const permissions: TPermissions[] = ['READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'];
+
+export interface IGroup {
     id: string;
     name: string;
-    permissions: Array<Permissions>;
+    permissions: Array<TPermissions>;
 }

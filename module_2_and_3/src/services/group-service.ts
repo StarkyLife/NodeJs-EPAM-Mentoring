@@ -1,22 +1,22 @@
-import { Group } from '../types/group';
+import { IGroup } from '../types/group';
 import { IDatabaseRepository } from '../data-access/database-respository.interface';
 
 import { IGroupService } from './group-service.interface';
 
 class GroupService implements IGroupService {
-    constructor(private groupRepository: IDatabaseRepository<Group>) {}
+    constructor(private groupRepository: IDatabaseRepository<IGroup>) {}
 
-    getById(id: string): Promise<Group | null> {
+    getById(id: string): Promise<IGroup | null> {
         return this.groupRepository.getById(id);
     }
-    getAll(): Promise<Group[]> {
+    getAll(): Promise<IGroup[]> {
         return this.groupRepository.getAll();
     }
-    createOrUpdate(group: Group): Promise<Group | null> {
-        throw new Error('Method not implemented.');
+    createOrUpdate(group: IGroup): Promise<IGroup | null> {
+        return this.groupRepository.createOrUpdate(group);
     }
     removeCompletely(id: string): Promise<boolean> {
-        throw new Error('Method not implemented.');
+        return this.groupRepository.delete(id);
     }
 }
 

@@ -1,8 +1,8 @@
-import { User } from '../types/user';
+import { IUser } from '../types/user';
 
 export interface IUserService {
-    getById(id: string): Promise<User | null>;
-    createOrUpdate(user: User): Promise<User | null>;
+    getById(id: string): Promise<IUser | null>;
+    createOrUpdate(user: IUser): Promise<IUser | null>;
     removeSoftly(id: string): Promise<boolean>;
-    search(login: string, limit: number): Promise<User[]>;
+    search(login: string, limit: number): Promise<IUser[]>;
 }

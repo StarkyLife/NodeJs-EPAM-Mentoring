@@ -3,12 +3,12 @@ import { createValidator } from 'express-joi-validation';
 import Joi from '@hapi/joi';
 
 import { IGroupService } from '../services/group-service.interface';
-import { Group } from '../types/group';
+import { IGroup, permissions } from '../types/group';
 
-const GroupValidationSchema = Joi.object<Group>({
-    id: Joi.string().required(),
+const GroupValidationSchema = Joi.object<IGroup>({
+    id: Joi.string(),
     name: Joi.string().required(),
-    permissions: Joi.string().required()
+    permissions: Joi.array().items(Joi.string().valid(...permissions)).required()
 }).required();
 
 export function createGroupRouter(groupService: IGroupService): Router {

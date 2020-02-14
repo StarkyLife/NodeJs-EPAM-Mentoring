@@ -4,4 +4,6 @@ export interface IDatabaseRepository<T extends object> {
     getAll(): Promise<T[]>;
 
     createOrUpdate(entity: T): Promise<T | null>;
+
+    delete(id: string): Promise<boolean>;
 }

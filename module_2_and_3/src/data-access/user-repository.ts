@@ -1,11 +1,11 @@
 import { Op } from 'sequelize';
 
-import { User } from '../types/user';
+import { IUser } from '../types/user';
 import { UserModel } from '../models/user';
 
 import { IDatabaseRepository } from './database-respository.interface';
 
-function convertToUser(model: UserModel): User | null {
+function convertToUser(model: UserModel): IUser | null {
     if (!model) {
         return null;
     }
@@ -19,14 +19,14 @@ function convertToUser(model: UserModel): User | null {
     };
 }
 
-class UserRepository implements IDatabaseRepository<User> {
-    async getById(id: string): Promise<User | null> {
+class UserRepository implements IDatabaseRepository<IUser> {
+    async getById(id: string): Promise<IUser | null> {
         const user = await UserModel.findByPk(id);
 
         return convertToUser(user);
     }
 
-    async getByRegexp(regexpString: string, limit?: number | undefined): Promise<User[]> {
+    async getByRegexp(regexpString: string, limit?: number | undefined): Promise<IUser[]> {
         const users = await UserModel.findAll({
             where: {
                 login: {
@@ -39,13 +39,13 @@ class UserRepository implements IDatabaseRepository<User> {
         return users.map(convertToUser);
     }
 
-    async getAll(): Promise<User[]> {
+    async getAll(): Promise<IUser[]> {
         const users = await UserModel.findAll();
 
         return users.map(convertToUser);
     }
 
-    async createOrUpdate(entity: User): Promise<User | null> {
+    async createOrUpdate(entity: IUser): Promise<IUser | null> {
         const found: UserModel = await UserModel.findByPk(entity.id);
 
         if (found) {
@@ -67,6 +67,10 @@ class UserRepository implements IDatabaseRepository<User> {
         });
 
         return convertToUser(newUser);
+    }
+
+    async delete(): Promise<boolean> {
+        throw new Error('Method not implemented.');
     }
 }
 

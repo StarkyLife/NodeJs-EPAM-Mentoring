@@ -1,11 +1,11 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 
-import { Permissions } from '../types/group';
+import { TPermissions, permissions } from '../types/group';
 
 export class GroupModel extends Model {
     id!: string;
     name!: string;
-    permissions!: Permissions;
+    permissions!: TPermissions;
 }
 
 export function init(sequelize: Sequelize): void {
@@ -17,9 +17,7 @@ export function init(sequelize: Sequelize): void {
             },
             permissions: {
                 type: new DataTypes.ARRAY(
-                    new DataTypes.ENUM<Permissions>(
-                        'READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'
-                    )
+                    new DataTypes.ENUM<TPermissions>(...permissions)
                 ),
                 defaultValue: []
             }

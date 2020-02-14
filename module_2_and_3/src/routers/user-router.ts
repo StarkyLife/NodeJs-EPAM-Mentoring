@@ -2,10 +2,10 @@ import express, { Router } from 'express';
 import { createValidator } from 'express-joi-validation';
 import Joi from '@hapi/joi';
 
-import { User } from '../types/user';
+import { IUser } from '../types/user';
 import { IUserService } from '../services/user-service.interface';
 
-const UserValidationSchema = Joi.object<User>({
+const UserValidationSchema = Joi.object<IUser>({
     id: Joi.string().required(),
     login: Joi.string().required(),
     password: Joi.string().alphanum().required(),
