@@ -28,6 +28,7 @@ export function createUserRouter(userService: IUserService): Router {
 
                     if (!user) {
                         response.status(404).send('Not found!');
+                        return;
                     }
 
                     response.json(user);

@@ -26,7 +26,10 @@ export function createGroupRouter(groupService: IGroupService): Router {
 
                     if (!group) {
                         response.status(404).send('Not found!');
+                        return;
                     }
+
+                    groupService.addUsers(group.id, ['1', '2']);
 
                     response.json(group);
                 } catch (error) {
@@ -36,7 +39,7 @@ export function createGroupRouter(groupService: IGroupService): Router {
         )
         .get(
             '/groups',
-            async (request, response) => {
+            async (_request, response) => {
                 try {
                     const groups = await groupService.getAll();
 
@@ -46,7 +49,7 @@ export function createGroupRouter(groupService: IGroupService): Router {
                 }
             }
         )
-        .post(
+        .post<any, any, IGroup>(
             '/group',
             validator.body(GroupValidationSchema),
             async (request, response) => {
@@ -69,6 +72,20 @@ export function createGroupRouter(groupService: IGroupService): Router {
                 try {
                     await groupService.removeCompletely(id);
                     response.send('Group removed!');
+                } catch (error) {
+                    response.status(500).send(error?.message);
+                }
+            }
+        )
+        .post<{ id: string }, any, string[]>(
+            '/addUsersToGroup/:id',
+            async (request, response) => {
+                const id = request.params.id;
+                const usersIds = request.body;
+
+                try {
+                    const allUsersInGroup = await groupService.addUsers(id, usersIds);
+                    response.json(allUsersInGroup);
                 } catch (error) {
                     response.status(500).send(error?.message);
                 }

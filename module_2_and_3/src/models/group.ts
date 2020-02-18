@@ -1,11 +1,16 @@
-import { Model, Sequelize, DataTypes } from 'sequelize';
+import { Model, Sequelize, DataTypes, HasManyAddAssociationsMixin, HasManyGetAssociationsMixin } from 'sequelize';
 
 import { TPermissions, permissions } from '../types/group';
+
+import { UserModel } from './user';
 
 export class GroupModel extends Model {
     id!: string;
     name!: string;
     permissions!: TPermissions;
+
+    addUsers!: HasManyAddAssociationsMixin<UserModel, string>;
+    getUsers!: HasManyGetAssociationsMixin<UserModel>;
 }
 
 export function init(sequelize: Sequelize): void {
@@ -23,6 +28,10 @@ export function init(sequelize: Sequelize): void {
             }
         },
         {
+            name: {
+                singular: 'group',
+                plural: 'groups'
+            },
             sequelize,
             tableName: 'groups',
             timestamps: false

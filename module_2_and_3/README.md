@@ -13,6 +13,7 @@ GET group: `curl http://localhost:8080/group/2`
 GET all groups: `curl http://localhost:8080/groups` 
 POST: `curl http://localhost:8080/group -X POST -H "Content-Type: application/json" -d '{ "name": "users", "permissions": ["READ"] }'`
 DELETE: `curl http://localhost:8080/group/2 -X DELETE`
+POST add users to group: `curl http://localhost:8080/addUsersToGroup/2 -X POST -H "Content-Type: application/json" -d '["1"]'`
 
 
 **Woring with Postgres**

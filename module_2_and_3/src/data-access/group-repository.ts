@@ -1,9 +1,12 @@
+import { Op } from 'sequelize';
+
 import { IGroup } from '../types/group';
 import { GroupModel } from '../models/group';
 
-import { IDatabaseRepository } from './database-respository.interface';
+import { IDatabaseRepository, ICanAddUsersToGroup } from './database-respository.interface';
+import { IUser } from '../types/user';
 
-class GroupRepository implements IDatabaseRepository<IGroup> {
+class GroupRepository implements IDatabaseRepository<IGroup>, ICanAddUsersToGroup {
     async getById(id: string): Promise<IGroup> {
         const group = await GroupModel.findByPk(id);
 
@@ -46,6 +49,16 @@ class GroupRepository implements IDatabaseRepository<IGroup> {
         const isDestroyed = found.destroy();
 
         return !!isDestroyed;
+    }
+
+    async addUsers(groupId: string, usersIds: string[]): Promise<IUser[]> {
+        const group: GroupModel = await GroupModel.findByPk(groupId);
+
+        await group.addUsers(usersIds);
+
+        const allUsersInGroup = await group.getUsers();
+
+        return allUsersInGroup;
     }
 }
 

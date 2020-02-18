@@ -29,6 +29,10 @@ export function init(sequelize: Sequelize): void {
             }
         },
         {
+            name: {
+                singular: 'user',
+                plural: 'users'
+            },
             sequelize,
             tableName: 'users',
             timestamps: false
