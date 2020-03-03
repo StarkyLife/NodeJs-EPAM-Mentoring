@@ -1,11 +1,11 @@
 import { IUser } from '../types/user';
-import { IDatabaseRepository } from '../data-access/database-respository.interface';
+import { IUserRepository } from '../data-access/user-respository.interface';
 import { getObjectPropertyLexicalComparer } from '../utils';
 
 import { IUserService } from './user-service.interface';
 
 class UserService implements IUserService {
-    constructor(private userRepository: IDatabaseRepository<IUser>) {}
+    constructor(private userRepository: IUserRepository) {}
 
     getById(id: string) {
         return this.userRepository.getById(id);

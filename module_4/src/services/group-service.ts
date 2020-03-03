@@ -1,11 +1,10 @@
 import { IGroup } from '../types/group';
-import { IDatabaseRepository, ICanAddUsersToGroup } from '../data-access/database-respository.interface';
+import { IGroupRepository } from '../data-access/group-respository.interface';
 
 import { IGroupService } from './group-service.interface';
-import { IUser } from '../types/user';
 
 class GroupService implements IGroupService {
-    constructor(private groupRepository: IDatabaseRepository<IGroup> & ICanAddUsersToGroup) {}
+    constructor(private groupRepository: IGroupRepository) {}
 
     getById(id: string): Promise<IGroup | null> {
         return this.groupRepository.getById(id);
@@ -20,7 +19,7 @@ class GroupService implements IGroupService {
         return this.groupRepository.delete(id);
     }
 
-    addUsers(groupId: string, usersIds: string[]): Promise<IUser[]> {
+    addUsers(groupId: string, usersIds: string[]): Promise<void> {
         return this.groupRepository.addUsers(groupId, usersIds);
     }
 }

@@ -1,19 +1,13 @@
-import { Op } from 'sequelize';
-
 import { IGroup } from '../types/group';
 import { GroupModel } from '../models/group';
 
-import { IDatabaseRepository, ICanAddUsersToGroup } from './database-respository.interface';
-import { IUser } from '../types/user';
+import { IGroupRepository } from './group-respository.interface';
 
-class GroupRepository implements IDatabaseRepository<IGroup>, ICanAddUsersToGroup {
+class GroupRepository implements IGroupRepository {
     async getById(id: string): Promise<IGroup> {
         const group = await GroupModel.findByPk(id);
 
         return group;
-    }
-    getByRegexp(): Promise<IGroup[]> {
-        throw new Error('Method not implemented.');
     }
     async getAll(): Promise<IGroup[]> {
         const groups = await GroupModel.findAll();
@@ -51,14 +45,10 @@ class GroupRepository implements IDatabaseRepository<IGroup>, ICanAddUsersToGrou
         return !!isDestroyed;
     }
 
-    async addUsers(groupId: string, usersIds: string[]): Promise<IUser[]> {
+    async addUsers(groupId: string, usersIds: string[]): Promise<void> {
         const group: GroupModel = await GroupModel.findByPk(groupId);
 
         await group.addUsers(usersIds);
-
-        const allUsersInGroup = await group.getUsers();
-
-        return allUsersInGroup;
     }
 }
 

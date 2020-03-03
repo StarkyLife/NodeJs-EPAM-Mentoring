@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 import { IUser } from '../types/user';
 import { UserModel } from '../models/user';
 
-import { IDatabaseRepository } from './database-respository.interface';
+import { IUserRepository } from './user-respository.interface';
 
 function convertToUser(model: UserModel): IUser | null {
     if (!model) {
@@ -19,7 +19,7 @@ function convertToUser(model: UserModel): IUser | null {
     };
 }
 
-class UserRepository implements IDatabaseRepository<IUser> {
+class UserRepository implements IUserRepository {
     async getById(id: string): Promise<IUser | null> {
         const user = await UserModel.findByPk(id);
 
@@ -35,12 +35,6 @@ class UserRepository implements IDatabaseRepository<IUser> {
             },
             limit
         });
-
-        return users.map(convertToUser);
-    }
-
-    async getAll(): Promise<IUser[]> {
-        const users = await UserModel.findAll();
 
         return users.map(convertToUser);
     }
@@ -67,10 +61,6 @@ class UserRepository implements IDatabaseRepository<IUser> {
         });
 
         return convertToUser(newUser);
-    }
-
-    async delete(): Promise<boolean> {
-        throw new Error('Method not implemented.');
     }
 }
 
