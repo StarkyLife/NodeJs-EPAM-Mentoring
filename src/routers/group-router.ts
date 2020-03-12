@@ -8,7 +8,10 @@ import { IGroup, permissions } from '../types/group';
 const GroupValidationSchema = Joi.object<IGroup>({
     id: Joi.string(),
     name: Joi.string().required(),
-    permissions: Joi.array().items(Joi.string().valid(...permissions)).required()
+    permissions: Joi.array()
+        .items(Joi.string().valid(...permissions))
+        .min(1)
+        .required()
 }).required();
 
 export function createGroupRouter(groupService: IGroupService): Router {
