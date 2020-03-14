@@ -1,7 +1,7 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 
 export class UserModel extends Model {
-    user_id!: string;
+    id!: string;
     login!: string;
     password!: string;
     age!: number;
@@ -11,11 +11,6 @@ export class UserModel extends Model {
 export function init(sequelize: Sequelize): void {
     UserModel.init(
         {
-            user_id: {
-                type: DataTypes.INTEGER.UNSIGNED,
-                autoIncrement: true,
-                primaryKey: true
-            },
             login: {
                 type: new DataTypes.STRING(50),
                 allowNull: false
@@ -34,6 +29,10 @@ export function init(sequelize: Sequelize): void {
             }
         },
         {
+            name: {
+                singular: 'user',
+                plural: 'users'
+            },
             sequelize,
             tableName: 'users',
             timestamps: false

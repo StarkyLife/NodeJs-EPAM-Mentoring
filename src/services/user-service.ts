@@ -1,17 +1,17 @@
-import { User } from '../types/user';
-import { IDatabaseRepository } from '../data-access/database-respository-interface';
-import { IUserService } from './user-service-interface';
-
+import { IUser } from '../types/user';
+import { IUserRepository } from '../data-access/user-respository.interface';
 import { getObjectPropertyLexicalComparer } from '../utils';
 
+import { IUserService } from './user-service.interface';
+
 class UserService implements IUserService {
-    constructor(private userRepository: IDatabaseRepository<User>) {}
+    constructor(private userRepository: IUserRepository) {}
 
     getById(id: string) {
         return this.userRepository.getById(id);
     }
 
-    createOrUpdate(user: User) {
+    createOrUpdate(user: IUser) {
         return this.userRepository.createOrUpdate(user);
     }
 
@@ -37,7 +37,7 @@ class UserService implements IUserService {
     async search(login: string, limit: number) {
         const foundUsers = await this.userRepository.getByRegexp(login, limit);
 
-        return foundUsers.sort(getObjectPropertyLexicalComparer<User, 'login'>('login'));
+        return foundUsers.sort(getObjectPropertyLexicalComparer<IUser, 'login'>('login'));
     }
 }
 

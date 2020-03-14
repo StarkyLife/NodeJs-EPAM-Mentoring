@@ -2,10 +2,10 @@ import express, { Router } from 'express';
 import { createValidator } from 'express-joi-validation';
 import Joi from '@hapi/joi';
 
-import { User } from '../types/user';
-import { IUserService } from '../services/user-service-interface';
+import { IUser } from '../types/user';
+import { IUserService } from '../services/user-service.interface';
 
-const UserValidationSchema = Joi.object<User>({
+const UserValidationSchema = Joi.object<IUser>({
     id: Joi.string().required(),
     login: Joi.string().required(),
     password: Joi.string().alphanum().required(),
@@ -19,7 +19,7 @@ export function createUserRouter(userService: IUserService): Router {
 
     userRouter
         .get<{ id: string }>(
-            '/user/:id',
+            '/users/:id',
             async (request, response) => {
                 const id = request.params.id;
 
@@ -28,6 +28,7 @@ export function createUserRouter(userService: IUserService): Router {
 
                     if (!user) {
                         response.status(404).send('Not found!');
+                        return;
                     }
 
                     response.json(user);
@@ -37,7 +38,7 @@ export function createUserRouter(userService: IUserService): Router {
             }
         )
         .post(
-            '/user',
+            '/users',
             validator.body(UserValidationSchema),
             async (request, response) => {
                 const user = request.body;
@@ -51,13 +52,13 @@ export function createUserRouter(userService: IUserService): Router {
                 }
             }
         )
-        .get<{ search: string, limit: string }>(
-            '/user-suggest',
+        .get(
+            '/users',
             async (request, response) => {
-                const { search: searchString, limit } = request.query;
+                const { login, limit } = request.query as { login: string, limit: string };
 
                 try {
-                    const foundUsers = await userService.search(searchString, limit);
+                    const foundUsers = await userService.search(login, +limit);
 
                     response.json(foundUsers);
                 } catch (error) {
@@ -66,7 +67,7 @@ export function createUserRouter(userService: IUserService): Router {
             }
         )
         .delete<{ id: string }>(
-            '/user/:id',
+            '/users/:id',
             async (request, response) => {
                 const id = request.params.id;
 
