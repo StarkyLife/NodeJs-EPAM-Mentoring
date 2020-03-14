@@ -7,7 +7,7 @@ import { associateModels } from '../models/models-associations';
 
 export let sequelize: Sequelize;
 
-export function initializeDB(connectionString: string) {
+export async function initializeDB(connectionString: string) {
     if (sequelize) {
         return;
     }
@@ -20,7 +20,5 @@ export function initializeDB(connectionString: string) {
 
     associateModels();
 
-    sequelize.authenticate()
-        .then(() => console.log('Success connection'))
-        .catch((error: Error) => console.log(`Error in connection ${error?.message}`));
+    await sequelize.authenticate();
 }
