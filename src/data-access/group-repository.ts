@@ -1,4 +1,5 @@
 import { IGroup } from '../types/group';
+import { NotFoundError } from '../types/errors';
 import { GroupModel } from '../models/group';
 
 import { IGroupRepository } from './group-respository.interface';
@@ -37,7 +38,7 @@ class GroupRepository implements IGroupRepository {
         const found: GroupModel = await GroupModel.findByPk(id);
 
         if (!found) {
-            return true;
+            throw new NotFoundError();
         }
 
         const isDestroyed = found.destroy();

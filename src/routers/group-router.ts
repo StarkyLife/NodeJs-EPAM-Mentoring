@@ -4,6 +4,7 @@ import Joi from '@hapi/joi';
 
 import { IGroupService } from '../services/group-service.interface';
 import { IGroup, permissions } from '../types/group';
+import { NotFoundError } from '../types/errors';
 
 const GroupValidationSchema = Joi.object<IGroup>({
     id: Joi.string(),
@@ -76,6 +77,11 @@ export function createGroupRouter(groupService: IGroupService): Router {
                     await groupService.removeCompletely(id);
                     response.send('Group removed!');
                 } catch (error) {
+                    if (error instanceof NotFoundError) {
+                        response.status(404).send('Group Not Found!');
+                        return;
+                    }
+
                     response.status(500).send(error?.message);
                 }
             }

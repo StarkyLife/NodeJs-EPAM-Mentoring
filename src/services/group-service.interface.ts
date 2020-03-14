@@ -1,5 +1,4 @@
 import { IGroup } from '../types/group';
-import { IUser } from '../types/user';
 
 export interface IGroupService {
     getById(id: string): Promise<IGroup | null>;
