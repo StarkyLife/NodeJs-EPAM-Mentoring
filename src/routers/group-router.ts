@@ -22,81 +22,79 @@ export function createGroupRouter(groupService: IGroupService): Router {
     router
         .get<{ id: string }>(
             '/groups/:id',
-            async (request, response) => {
+            async (request, response, next) => {
                 const id = request.params.id;
 
                 try {
                     const group = await groupService.getById(id);
 
                     if (!group) {
-                        response.status(404).send('Not found!');
-                        return;
+                        return response.status(404).send('Not found!');
                     }
 
                     groupService.addUsers(group.id, ['1', '2']);
 
-                    response.json(group);
+                    return response.json(group);
                 } catch (error) {
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         )
         .get(
             '/groups',
-            async (_request, response) => {
+            async (_request, response, next) => {
                 try {
                     const groups = await groupService.getAll();
 
-                    response.json(groups);
+                    return response.json(groups);
                 } catch (error) {
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         )
         .post<any, any, IGroup>(
             '/groups',
             validator.body(GroupValidationSchema),
-            async (request, response) => {
+            async (request, response, next) => {
                 const group = request.body;
 
                 try {
                     const updatedOrNew = await groupService.createOrUpdate(group);
 
-                    response.json(updatedOrNew);
+                    return response.json(updatedOrNew);
                 } catch (error) {
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         )
         .delete<{ id: string }>(
             '/groups/:id',
-            async (request, response) => {
+            async (request, response, next) => {
                 const id = request.params.id;
 
                 try {
                     await groupService.removeCompletely(id);
-                    response.send('Group removed!');
+                    return response.send('Group removed!');
                 } catch (error) {
                     if (error instanceof NotFoundError) {
-                        response.status(404).send('Group Not Found!');
-                        return;
+                        return response.status(404).send('Group Not Found!');
                     }
 
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         )
         .post<{ id: string }, any, string[]>(
             '/groups/:id/users/add',
-            async (request, response) => {
+            async (request, response, next) => {
                 const id = request.params.id;
                 const usersIds = request.body;
 
                 try {
                     const allUsersInGroup = await groupService.addUsers(id, usersIds);
-                    response.json(allUsersInGroup);
+                    return response.json(allUsersInGroup);
                 } catch (error) {
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         );

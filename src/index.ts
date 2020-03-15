@@ -1,6 +1,7 @@
 import express from 'express';
 
-import logger from './logger';
+import methodInvocationLoggingMiddleware from './middlewares/method-invokation-logging';
+import errorHandlingMiddleware from './middlewares/error-handling';
 
 import UserService from './services/user-service';
 import GroupService from './services/group-service';
@@ -29,11 +30,10 @@ import GroupRepository from './data-access/group-repository';
 
     app.use(
         '/',
-        ({ method, url, body }, _response, next) => {
-            logger.info('API Method Invokation', { method, url, body });
-            next();
-        },
+        methodInvocationLoggingMiddleware,
         createUserRouter(userService),
         createGroupRouter(groupService)
     );
+
+    app.use(errorHandlingMiddleware);
 }());
