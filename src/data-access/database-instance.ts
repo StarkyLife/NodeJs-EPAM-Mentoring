@@ -5,14 +5,14 @@ import { init as initGroupModel } from '../models/group';
 import { init as initUserGroupModel } from '../models/user-group';
 import { associateModels } from '../models/models-associations';
 
-export let sequelize: Sequelize;
+export function initializeDB(connectionString: string) {
+    const sequelize = new Sequelize(connectionString);
 
-export async function initializeDB(connectionString: string) {
-    if (sequelize) {
-        return;
-    }
-
-    sequelize = new Sequelize(connectionString);
+    sequelize.authenticate()
+        .then(() => console.log('Connection to Database is established!'))
+        .catch(() => {
+            throw new Error('Database connection error!');
+        });
 
     initUserModel(sequelize);
     initGroupModel(sequelize);
@@ -20,5 +20,7 @@ export async function initializeDB(connectionString: string) {
 
     associateModels();
 
-    await sequelize.authenticate();
+    return {
+        closeConnection: sequelize.close.bind(sequelize)
+    };
 }

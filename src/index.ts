@@ -1,5 +1,7 @@
 import express from 'express';
 
+import logger from './logger';
+
 import methodInvocationLoggingMiddleware from './middlewares/method-invokation-logging';
 import errorHandlingMiddleware from './middlewares/error-handling';
 
@@ -13,27 +15,52 @@ import { initializeDB } from './data-access/database-instance';
 import UserRepository from './data-access/user-repository';
 import GroupRepository from './data-access/group-repository';
 
-(async function init() {
-    const app = express();
+const app = express();
 
-    app.listen(8080);
-    app.use(express.json());
+app.use(express.json());
 
-    const DB_CONNECTION_STRING = process.env.DB || 'postgres://localhost:5432/nodejs_mentoring';
-    await initializeDB(DB_CONNECTION_STRING);
+const DB_CONNECTION_STRING = process.env.DB || 'postgres://localhost:5432/nodejs_mentoring';
+const db = initializeDB(DB_CONNECTION_STRING);
 
-    const userRepository = new UserRepository();
-    const groupRepository = new GroupRepository();
+const userRepository = new UserRepository();
+const groupRepository = new GroupRepository();
 
-    const userService = new UserService(userRepository);
-    const groupService = new GroupService(groupRepository);
+const userService = new UserService(userRepository);
+const groupService = new GroupService(groupRepository);
 
-    app.use(
-        '/',
-        methodInvocationLoggingMiddleware,
-        createUserRouter(userService),
-        createGroupRouter(groupService)
-    );
+app.use(
+    '/',
+    methodInvocationLoggingMiddleware,
+    createUserRouter(userService),
+    createGroupRouter(groupService)
+);
+app.use(errorHandlingMiddleware);
 
-    app.use(errorHandlingMiddleware);
-}());
+const server = app.listen(8080);
+
+process.on('uncaughtException', async (error) => {
+    try {
+        await new Promise((resolve) => {
+            logger.error('uncaughtException', error);
+            logger.on('end', resolve);
+        });
+
+        if (server) {
+            await new Promise(server.close.bind(server));
+            console.log('Server closed!');
+        }
+
+        if (db) {
+            await db.closeConnection();
+            console.log('Database connection is closed!');
+        }
+    } finally {
+        process.exit(1);
+    }
+});
+
+process.on('unhandledRejection', (error) => {
+    if (error) {
+        logger.error('unhandledRejection', error);
+    }
+});
