@@ -27,8 +27,7 @@ export function createUserRouter(userService: IUserService): Router {
                     const user = await userService.getById(id);
 
                     if (!user) {
-                        response.status(404).send('Not found!');
-                        return;
+                        return response.status(404).send('Not found!');
                     }
 
                     return response.json(user);
