@@ -19,6 +19,12 @@ POST: `curl http://localhost:8080/groups -X POST -H "Content-Type: application/j
 DELETE: `curl http://localhost:8080/groups/2 -X DELETE`\
 POST add users to group: `curl http://localhost:8080/groups/2/users/add -X POST -H "Content-Type: application/json" -d '["1"]'`
 
+------------------------
+_AUTH__
+------------------------
+
+LOGIN: `curl http://localhost:8080/login -X POST -H "Content-Type: application/json" -d '{ "login": "starky", "password": "pass" }'`\
+
 -----------------------------
 **Woring with Postgres**
 -----------------------------

@@ -5,4 +5,5 @@ export interface IUserService {
     createOrUpdate(user: IUser): Promise<IUser | null>;
     removeSoftly(id: string): Promise<boolean>;
     search(login: string, limit: number): Promise<IUser[]>;
+    checkUserCredentials(login: string, password: string): Promise<IUser | null>;
 }

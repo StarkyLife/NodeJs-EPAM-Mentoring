@@ -39,6 +39,17 @@ class UserService implements IUserService {
 
         return foundUsers.sort(getObjectPropertyLexicalComparer<IUser, 'login'>('login'));
     }
+
+    async checkUserCredentials(login: string, password: string): Promise<IUser | null> {
+        const users = await this.search(login, 1);
+        const user = users?.[0];
+
+        if (!user || user.password !== password) {
+            return null;
+        }
+
+        return user;
+    }
 }
 
 export default UserService;

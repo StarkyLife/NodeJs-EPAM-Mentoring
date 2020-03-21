@@ -4,6 +4,11 @@ import logger from './logger';
 
 import methodInvocationLoggingMiddleware from './middlewares/method-invokation-logging';
 import errorHandlingMiddleware from './middlewares/error-handling';
+import {
+    authValidatorMiddleware,
+    authenticationMiddleware,
+    checkAuth
+} from './middlewares/auth-middleware';
 
 import UserService from './services/user-service';
 import GroupService from './services/group-service';
@@ -33,11 +38,18 @@ app.use(
     methodInvocationLoggingMiddleware
 );
 app.use(
+    '/login',
+    authValidatorMiddleware,
+    authenticationMiddleware(userService)
+);
+app.use(
     '/users',
+    checkAuth,
     createUserRouter(userService)
 );
 app.use(
     '/groups',
+    checkAuth,
     createGroupRouter(groupService)
 );
 app.use(errorHandlingMiddleware);
