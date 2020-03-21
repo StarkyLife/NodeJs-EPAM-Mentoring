@@ -19,7 +19,7 @@ export function createUserRouter(userService: IUserService): Router {
 
     userRouter
         .get<{ id: string }>(
-            '/users/:id',
+            '/:id',
             async (request, response, next) => {
                 const id = request.params.id;
 
@@ -37,7 +37,7 @@ export function createUserRouter(userService: IUserService): Router {
             }
         )
         .post(
-            '/users',
+            '',
             validator.body(UserValidationSchema),
             async (request, response, next) => {
                 const user = request.body;
@@ -52,7 +52,7 @@ export function createUserRouter(userService: IUserService): Router {
             }
         )
         .get(
-            '/users',
+            '',
             async (request, response, next) => {
                 const { login, limit } = request.query as { login: string, limit: string };
 
@@ -66,7 +66,7 @@ export function createUserRouter(userService: IUserService): Router {
             }
         )
         .delete<{ id: string }>(
-            '/users/:id',
+            '/:id',
             async (request, response, next) => {
                 const id = request.params.id;
 

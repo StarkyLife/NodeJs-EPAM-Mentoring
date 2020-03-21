@@ -21,7 +21,7 @@ export function createGroupRouter(groupService: IGroupService): Router {
 
     router
         .get<{ id: string }>(
-            '/groups/:id',
+            '/:id',
             async (request, response, next) => {
                 const id = request.params.id;
 
@@ -41,7 +41,7 @@ export function createGroupRouter(groupService: IGroupService): Router {
             }
         )
         .get(
-            '/groups',
+            '',
             async (_request, response, next) => {
                 try {
                     const groups = await groupService.getAll();
@@ -53,7 +53,7 @@ export function createGroupRouter(groupService: IGroupService): Router {
             }
         )
         .post<any, any, IGroup>(
-            '/groups',
+            '',
             validator.body(GroupValidationSchema),
             async (request, response, next) => {
                 const group = request.body;
@@ -68,7 +68,7 @@ export function createGroupRouter(groupService: IGroupService): Router {
             }
         )
         .delete<{ id: string }>(
-            '/groups/:id',
+            '/:id',
             async (request, response, next) => {
                 const id = request.params.id;
 
@@ -85,7 +85,7 @@ export function createGroupRouter(groupService: IGroupService): Router {
             }
         )
         .post<{ id: string }, any, string[]>(
-            '/groups/:id/users/add',
+            '/:id/users/add',
             async (request, response, next) => {
                 const id = request.params.id;
                 const usersIds = request.body;

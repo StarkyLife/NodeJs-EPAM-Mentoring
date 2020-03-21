@@ -30,8 +30,14 @@ const groupService = new GroupService(groupRepository);
 
 app.use(
     '/',
-    methodInvocationLoggingMiddleware,
-    createUserRouter(userService),
+    methodInvocationLoggingMiddleware
+);
+app.use(
+    '/users',
+    createUserRouter(userService)
+);
+app.use(
+    '/groups',
     createGroupRouter(groupService)
 );
 app.use(errorHandlingMiddleware);
