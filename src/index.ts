@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 
 import logger from './logger';
 
@@ -23,6 +24,7 @@ import GroupRepository from './data-access/group-repository';
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 const DB_CONNECTION_STRING = process.env.DB || 'postgres://localhost:5432/nodejs_mentoring';
 const db = initializeDB(DB_CONNECTION_STRING);
