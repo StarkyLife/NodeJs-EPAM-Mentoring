@@ -20,62 +20,61 @@ export function createUserRouter(userService: IUserService): Router {
     userRouter
         .get<{ id: string }>(
             '/users/:id',
-            async (request, response) => {
+            async (request, response, next) => {
                 const id = request.params.id;
 
                 try {
                     const user = await userService.getById(id);
 
                     if (!user) {
-                        response.status(404).send('Not found!');
-                        return;
+                        return response.status(404).send('Not found!');
                     }
 
-                    response.json(user);
+                    return response.json(user);
                 } catch (error) {
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         )
         .post(
             '/users',
             validator.body(UserValidationSchema),
-            async (request, response) => {
+            async (request, response, next) => {
                 const user = request.body;
 
                 try {
                     const updatedOrNew = await userService.createOrUpdate(user);
 
-                    response.json(updatedOrNew);
+                    return response.json(updatedOrNew);
                 } catch (error) {
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         )
         .get(
             '/users',
-            async (request, response) => {
+            async (request, response, next) => {
                 const { login, limit } = request.query as { login: string, limit: string };
 
                 try {
                     const foundUsers = await userService.search(login, +limit);
 
-                    response.json(foundUsers);
+                    return response.json(foundUsers);
                 } catch (error) {
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         )
         .delete<{ id: string }>(
             '/users/:id',
-            async (request, response) => {
+            async (request, response, next) => {
                 const id = request.params.id;
 
                 try {
                     await userService.removeSoftly(id);
-                    response.send('User removed!');
+                    return response.send('User removed!');
                 } catch (error) {
-                    response.status(500).send(error?.message);
+                    return next(error);
                 }
             }
         );
