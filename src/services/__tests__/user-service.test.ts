@@ -32,13 +32,11 @@ describe('Soft user removal', () => {
 
         expect(actual).toBe(true);
     });
-
     it('should throw an error if user was not found', async () => {
         const userService = new UserService({ ...repo, getById: async () => null });
 
         await expect(userService.removeSoftly('123')).rejects.toEqual(new Error('Not Found!'));
     });
-
     it('should throw an error if something happened while updating user', async () => {
         const userService = new UserService({ ...repo, createOrUpdate: async () => null });
 
@@ -66,5 +64,39 @@ describe('Search for users by term', () => {
         const actual = await userService.search('and', 2);
 
         expect(actual.map((u) => u.login)).toEqual(['andrew', 'zuandrew']);
+    });
+});
+
+describe('Checking user credentials', () => {
+    it('should return user, if given login and password are matches', async () => {
+        const userLogin = 'Me';
+        const userPassword = 'passwordOfMe';
+
+        const userService = new UserService({
+            ...repo,
+            getByRegexp: async () => ([createRandomUser({
+                login: userLogin, password: userPassword
+            })])
+        });
+
+        const actual = await userService.checkUserCredentials(userLogin, userPassword);
+
+        expect(actual).toMatchObject({ login: userLogin, password: userPassword });
+    });
+
+    it('should return `null` if password do not match', async () => {
+        const userLogin = 'Ilshat';
+
+        const userService = new UserService({
+            ...repo,
+            getByRegexp: async () => ([createRandomUser({
+                login: userLogin,
+                password: 'random'
+            })])
+        });
+
+        const actual = await userService.checkUserCredentials(userLogin, 'incorrect');
+
+        expect(actual).toBeNull();
     });
 });
