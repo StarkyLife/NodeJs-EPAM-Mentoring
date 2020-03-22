@@ -45,3 +45,26 @@ describe('Soft user removal', () => {
         await expect(userService.removeSoftly('123')).rejects.toEqual(new Error('Error while updating!'));
     });
 });
+
+describe('Search for users by term', () => {
+    it('should find users that are have given substring in their login', async () => {
+        const userService = new UserService(repo);
+
+        const actual = await userService.search('random-login', 1);
+
+        expect(actual[0].login).toEqual('random-login');
+    });
+    it('should sort found users by their logins in lexical order', async () => {
+        const userService = new UserService({
+            ...repo,
+            getByRegexp: async () => ([
+                createRandomUser({ login: 'zuandrew' }),
+                createRandomUser({ login: 'andrew' })
+            ])
+        });
+
+        const actual = await userService.search('and', 2);
+
+        expect(actual.map((u) => u.login)).toEqual(['andrew', 'zuandrew']);
+    });
+});
