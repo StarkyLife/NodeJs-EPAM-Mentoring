@@ -1,3 +1,4 @@
+import config from 'config';
 import express from 'express';
 import cors from 'cors';
 
@@ -7,8 +8,7 @@ import methodInvocationLoggingMiddleware from './middlewares/method-invokation-l
 import errorHandlingMiddleware from './middlewares/error-handling';
 import {
     authValidatorMiddleware,
-    authenticationMiddleware,
-    checkAuth
+    initializeAuth
 } from './middlewares/auth-middleware';
 
 import UserService from './services/user-service';
@@ -21,19 +21,23 @@ import { initializeDB } from './data-access/database-instance';
 import UserRepository from './data-access/user-repository';
 import GroupRepository from './data-access/group-repository';
 
+const dbConnectionString = config.get<string>('databaseConnectionString');
+const authSecret = config.get<string>('authSecret');
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-const DB_CONNECTION_STRING = process.env.DB || 'postgres://localhost:5432/nodejs_mentoring';
-const db = initializeDB(DB_CONNECTION_STRING);
+const db = initializeDB(dbConnectionString);
 
 const userRepository = new UserRepository();
 const groupRepository = new GroupRepository();
 
 const userService = new UserService(userRepository);
 const groupService = new GroupService(groupRepository);
+
+const auth = initializeAuth(userService, { secret: authSecret });
 
 app.use(
     '/',
@@ -42,16 +46,16 @@ app.use(
 app.use(
     '/login',
     authValidatorMiddleware,
-    authenticationMiddleware(userService)
+    auth.loginMiddleware
 );
 app.use(
     '/users',
-    checkAuth,
+    auth.tokenCheckMiddleware,
     createUserRouter(userService)
 );
 app.use(
     '/groups',
-    checkAuth,
+    auth.tokenCheckMiddleware,
     createGroupRouter(groupService)
 );
 app.use(errorHandlingMiddleware);

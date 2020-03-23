@@ -1,0 +1,4 @@
+{
+    "databaseConnectionString": "postgres://localhost:5432/nodejs_mentoring",
+    "authSecret": "Farkhad"
+}
