@@ -7,7 +7,7 @@ _USERS_
 GET user: `curl http://localhost:8080/users/2`\
 POST: `curl http://localhost:8080/users -X POST -H "Content-Type: application/json" -d @./src/test-user.json`\
 DELETE: `curl http://localhost:8080/users/2 -X DELETE`\
-GET user-autosuggestion: `curl http://localhost:8080/users\?search\=k\&limit\=4`\
+GET user-autosuggestion: `curl http://localhost:8080/users\?login\=k\&limit\=4`\
 
 -----------------------
 _GROUPS_
