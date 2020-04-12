@@ -6,7 +6,7 @@ import { IUser } from '../types/user';
 import { IUserService } from '../services/user-service.interface';
 
 const UserValidationSchema = Joi.object<IUser>({
-    id: Joi.string().required(),
+    id: Joi.string().optional(),
     login: Joi.string().required(),
     password: Joi.string().alphanum().required(),
     age: Joi.number().greater(4).less(130).required(),
